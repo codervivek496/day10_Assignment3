@@ -1,24 +1,40 @@
 #flip Coin Simulator
-declare -A simulator
-h=0
-t=0
-for ((i=0; i<1000; i++))
-do
-flip=$(( RANDOM%2 ))
-if [ $flip -eq 0 ]
-then
-	h=$((h+1))
-else
-	t=$((t+1))
-fi
-done
-simulator=(["Heads"]=$h ["Tails"]=$t)
-for coin in "${!simulator[@]}";
-do
-	echo $coin - ${simulator[$coin]};
-done
-headPercent=`expr $h / 10`
-tailPercent=`expr 100 - $headPercent`
-echo "Head percent: $headPercent"
-echo "Tail percent: $tailPercent"
 
+#! /bin/bash -x
+
+#varibles
+counter=0
+index=0
+total_heads=0
+total_tails=0
+
+#Dictionary for Singlet Combination
+declare -A singlet
+singlet[head]=" "
+singlet[tails]=" "
+singlet[h_per]=0
+singlet[t_per]=0
+
+read -p "Enter how many times you want flip the coin  " FLIP
+while [ $counter -lt $FLIP ]
+do
+	coin_1=$(( RANDOM%2 ))
+	if [ $coin_1 -eq 1 ]
+	then
+		singlet[head]="H"
+		((total_heads++))
+	else
+		singlet[tails]="T"
+		((total_tails++))
+	fi
+	((counter++))
+done
+echo "Singlet Combination" ${singlet[head]} ${singlet[tails]}
+singlet[h_per]=$(echo $total_heads $FLIP | awk '{print $1/$2}')
+echo "Percentage of head ="${singlet[h_per]}
+
+singlet[t_per]=$(echo $total_tails $FLIP | awk '{print $1/$2}')
+echo "Percentage of tails =" ${singlet[t_per]}
+
+arr[((index++))]=${singlet[h_per]}
+arr[((index++))]=${singlet[t_per]}
